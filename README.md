@@ -81,30 +81,26 @@ Checks can be of 2 types, synchronous or asynchronous. Synchronous checks can th
 var scrutiny = new Scrutiny();
 
 // Synchronous validator
-scrutiny.register("url", function(value) {
-    if (!/^https?:\/\/.+\.[a-z]+$/.test(value)) {
-        throw new Error("ERR_INVALID_URL");
+scrutiny.register("email", function(value) {
+    if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]+$/.test(value)) {
+        throw new Error("ERR_INVALID_EMAIL");
     }
 });
 
-scrutiny.validate(somevar, scrutiny.checks.url)
-.catch(/* handle error */)
-.then(/* do something with value */)
-
 // Async validator
-scrutiny.register("username", function(value) {
+scrutiny.register("unique", function(value) {
     return new Promise(function(resolve, reject) {
         // query the server for the name
 
         if (exists) {
-            reject(new Error("ERR_USERNAME_EXISTS"));
+            reject(new Error("ERR_EMAIL_EXISTS"));
         } else {
             resolve();
         }
     });
 });
 
-scrutiny.validate(somevar, scrutiny.checks.username)
+scrutiny.validate(emailId, scrutiny.checks.email, scrutiny.checks.unique)
 .catch(/* handle error */)
 .then(/* do something with value */)
 ```
