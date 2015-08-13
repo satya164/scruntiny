@@ -61,9 +61,6 @@ scrutiny.checks.objectOf(scrutiny.checks.number)
 // Value could be one of many types
 scrutiny.checks.oneOfType([ scrutiny.checks.string, scrutiny.checks.number ])
 
-// Value is not of the type
-scrutiny.checks.notOfType(scrutiny.checks.array)
-
 // An object taking on a particular shape
 scrutiny.checks.shape({
     name: scrutiny.checks.string,

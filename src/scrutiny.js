@@ -126,18 +126,6 @@ Type.defaultChecks = {
         };
     },
 
-    notOfType: function(check) {
-        return function(value) {
-            var self = this;
-
-            return self.validate(value, check).then(function() {
-                throw new Error("ERR_NOT_INVALID_TYPE");
-            }).catch(function() {
-                return value;
-            });
-        };
-    },
-
     shape: function(shape) {
         return function(value) {
             var self = this;
