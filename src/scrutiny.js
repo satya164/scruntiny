@@ -114,14 +114,16 @@ Type.defaultChecks = {
         return function(value) {
             var self = this;
 
-            var promises = checks.map(function(check) {
-                return self.validate(value, check);
-            });
-
-            return Promise.race(promises).catch(function() {
-                return Promise.all(promises);
-            }).catch(function() {
-                throw new Error("ERR_NOT_ONE_OF_TYPE");
+            return Promise.all(checks.map(function(c) {
+                return self.validate(value, c).then(function() {
+                    return true;
+                }, function() {
+                    return false;
+                });
+            })).then(function(results) {
+                if (results.indexOf(true) === -1) {
+                    throw new Error("ERR_NOT_ONE_OF_TYPE");
+                }
             });
         };
     },
