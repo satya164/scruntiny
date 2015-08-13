@@ -15,6 +15,12 @@ Type.defaultChecks = {
 
     any: function() {},
 
+    undef: function(value) {
+        if (typeof value !== "undefined") {
+            throw new Error("ERR_VALUE_DEFINED");
+        }
+    },
+
     string: function(value) {
         if (typeof value !== "string") {
             throw new Error("ERR_INVALID_STRING");
@@ -121,7 +127,7 @@ Type.defaultChecks = {
         };
     },
 
-    not: function(check) {
+    notOfType: function(check) {
         var self = this;
 
         return function(value) {
