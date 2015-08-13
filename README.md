@@ -106,12 +106,12 @@ scrutiny.validate(emailId, scrutiny.checks.email, scrutiny.checks.unique)
 .then(/* do something with value */)
 ```
 
-### Source code
+## Source code
 
 You can get the latest source code from the [github page](http://github.com/satya164/scrutiny).
 
 `git clone https://github.com/satya164/scrutiny.git`
 
-### Bugs and feature requests
+## Bugs and feature requests
 
 Please submit bugs and feature requests [here](http://github.com/satya164/scrutiny/issues). Pull requests are always welcome.
