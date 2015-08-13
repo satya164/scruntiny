@@ -51,12 +51,6 @@ Type.defaultChecks = {
         }
     },
 
-    promise: function(value) {
-        if (!value || typeof value.then !== "function") {
-            throw new Error("ERR_INVALID_PROMISE");
-        }
-    },
-
 
     // Helpers
 
