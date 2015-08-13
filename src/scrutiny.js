@@ -7,6 +7,8 @@ function Type() {
     }
 
     this.checks = Object.create(Type.defaultChecks);
+
+    Object.defineProperty(this.checks, "__instance__", { value: this, enumerable: false });
 }
 
 Type.defaultChecks = {
@@ -77,9 +79,9 @@ Type.defaultChecks = {
     },
 
     arrayOf: function(check) {
-        var self = this;
-
         return function(value) {
+            var self = this;
+
             return self.validate(value, self.checks.array).then(function() {
                 return Promise.all(value.map(function(item) {
                     return self.validate(item, check);
@@ -91,9 +93,9 @@ Type.defaultChecks = {
     },
 
     objectOf: function(check) {
-        var self = this;
-
         return function(value) {
+            var self = this;
+
             return self.validate(value, self.checks.object).then(function() {
                 var promises = [];
 
@@ -109,9 +111,9 @@ Type.defaultChecks = {
     },
 
     oneOfType: function(checks) {
-        var self = this;
-
         return function(value) {
+            var self = this;
+
             var promises = checks.map(function(check) {
                 return self.validate(value, check);
             });
@@ -125,9 +127,9 @@ Type.defaultChecks = {
     },
 
     notOfType: function(check) {
-        var self = this;
-
         return function(value) {
+            var self = this;
+
             return self.validate(value, check).then(function() {
                 throw new Error("ERR_NOT_INVALID_TYPE");
             }).catch(function() {
@@ -137,9 +139,9 @@ Type.defaultChecks = {
     },
 
     shape: function(shape) {
-        var self = this;
-
         return function(value) {
+            var self = this;
+
             return self.validate(value, self.checks.object).then(function() {
                 var promises = [];
 
