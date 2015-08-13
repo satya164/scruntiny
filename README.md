@@ -1,4 +1,4 @@
-# Scruntiny
+# Scrutiny
 
 An async validator.
 
