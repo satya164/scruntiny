@@ -68,9 +68,7 @@ Type.defaultChecks = {
         };
     },
 
-    oneOf: function() {
-        var values = Array.prototype.slice.call(arguments);
-
+    oneOf: function(values) {
         return function(value) {
             if (values.indexOf(value) === -1) {
                 throw new Error("ERR_NOT_ONE_OF");
@@ -110,9 +108,8 @@ Type.defaultChecks = {
         };
     },
 
-    oneOfType: function() {
-        var checks = Array.prototype.slice.call(arguments),
-            self = this;
+    oneOfType: function(checks) {
+        var self = this;
 
         return function(value) {
             var promises = checks.map(function(check) {

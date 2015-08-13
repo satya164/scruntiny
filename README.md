@@ -22,7 +22,10 @@ var scrutiny = new Scrutiny();
 
 scrutiny.validate(
     someval,
-    scrutiny.checks.oneOfType(scrutiny.checks.string, scrutiny.checks.number)
+    scrutiny.checks.oneOfType([
+        scrutiny.checks.string,
+        scrutiny.checks.number
+    ])
 )
 .catch(function(error) {
     // handle error
@@ -50,13 +53,13 @@ scrutiny.checks.object         // matches objects, doesn't match null
 scrutiny.checks.instanceOf(Class)
 
 // Value is limited to specific values
-scrutiny.checks.oneOf("apple", "banana")
+scrutiny.checks.oneOf([ "apple", "banana" ])
 
 // An object with property values of a certain type
 scrutiny.checks.objectOf(scrutiny.checks.number)
 
 // Value could be one of many types
-scrutiny.checks.oneOfType(scrutiny.checks.string, scrutiny.checks.number)
+scrutiny.checks.oneOfType([ scrutiny.checks.string, scrutiny.checks.number ])
 
 // Value is not of the type
 scrutiny.checks.notOfType(scrutiny.checks.array)
