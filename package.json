@@ -1,0 +1,27 @@
+{
+  "name": "scrutiny",
+  "version": "0.1.0",
+  "description": "An async validator",
+  "main": "src/scrutiny.js",
+  "scripts": {
+    "test": "node_modules/.bin/mocha test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/satya164/scrutiny.git"
+  },
+  "keywords": [
+    "hashmap",
+    "map",
+    "temporary"
+  ],
+  "author": "Satyajit Sahoo <satyajit.happy@gmail.com> (https://github.com/satya164/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/satya164/scrutiny/issues"
+  },
+  "homepage": "https://github.com/satya164/scrutiny#readme",
+  "devDependencies": {
+    "mocha": "latest"
+  }
+}
