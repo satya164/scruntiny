@@ -253,3 +253,142 @@ describe("object", function() {
         });
     });
 });
+
+describe("instanceOf", function() {
+    it("should pass instanceOf validatation", function() {
+        var scrutiny = new Scrutiny(),
+            arr = new Array();
+
+        return scrutiny.validate(arr, scrutiny.checks.instanceOf(Array)).then(function(value) {
+            assert.equal(value, arr);
+        });
+    });
+
+    it("should fail instanceOf validatation", function() {
+        var scrutiny = new Scrutiny();
+
+        return scrutiny.validate(new Array(), scrutiny.checks.instanceOf(Number)).then(function() {
+            assert(false);
+        }, function(e) {
+            assert.equal(e.message, "ERR_INVALID_INSTANCE");
+        });
+    });
+});
+
+describe("oneOf", function() {
+    it("should pass oneOf validatation", function() {
+        var scrutiny = new Scrutiny(),
+            item = "apple";
+
+        return scrutiny.validate(item, scrutiny.checks.oneOf([ "apple", "banana" ])).then(function(value) {
+            assert.equal(value, item);
+        });
+    });
+
+    it("should fail oneOf validatation", function() {
+        var scrutiny = new Scrutiny();
+
+        return scrutiny.validate("orange", scrutiny.checks.oneOf([ "apple", "banana" ])).then(function() {
+            assert(false);
+        }, function(e) {
+            assert.equal(e.message, "ERR_NOT_ONE_OF");
+        });
+    });
+});
+
+describe("arrayOf", function() {
+    it("should pass arrayOf validatation", function() {
+        var scrutiny = new Scrutiny(),
+            arr = [ 1, 2, 3 ];
+
+        return scrutiny.validate(arr, scrutiny.checks.arrayOf(scrutiny.checks.number)).then(function(value) {
+            assert.equal(value, arr);
+        });
+    });
+
+    it("should fail arrayOf validatation", function() {
+        var scrutiny = new Scrutiny();
+
+        return scrutiny.validate([ "a", "b", "c" ], scrutiny.checks.arrayOf(scrutiny.checks.number)).then(function() {
+            assert(false);
+        }, function(e) {
+            assert.equal(e.message, "ERR_NOT_ARRAY_OF");
+        });
+    });
+});
+
+describe("objectOf", function() {
+    it("should pass objectOf validatation", function() {
+        var scrutiny = new Scrutiny(),
+            arr = { fruits: [ "a", "b", "c" ] };
+
+        return scrutiny.validate(arr, scrutiny.checks.objectOf(scrutiny.checks.arrayOf(scrutiny.checks.string))).then(function(value) {
+            assert.equal(value, arr);
+        });
+    });
+
+    it("should fail objectOf validatation", function() {
+        var scrutiny = new Scrutiny();
+
+        return scrutiny.validate({ items: 3 }, scrutiny.checks.objectOf(scrutiny.checks.string)).then(function() {
+            assert(false);
+        }, function(e) {
+            assert.equal(e.message, "ERR_NOT_OBJECT_OF");
+        });
+    });
+});
+
+describe("oneOfType", function() {
+    it("should pass oneOfType validatation", function() {
+        var scrutiny = new Scrutiny(),
+            item1 = "boo",
+            item2 = 123;
+
+        return scrutiny.validate(item1, scrutiny.checks.oneOfType([ scrutiny.checks.number, scrutiny.checks.string ])).then(function(value) {
+            assert.equal(value, item1);
+        }).then(function() {
+            return scrutiny.validate(item2, scrutiny.checks.oneOfType([ scrutiny.checks.number, scrutiny.checks.string ]));
+        }).then(function(value) {
+            assert.equal(value, item2);
+        });
+    });
+
+    it("should fail oneOfType validatation", function() {
+        var scrutiny = new Scrutiny();
+
+        return scrutiny.validate({}, scrutiny.checks.oneOfType([ scrutiny.checks.number, scrutiny.checks.string ])).then(function() {
+            assert(false);
+        }, function(e) {
+            assert.equal(e.message, "ERR_NOT_ONE_OF_TYPE");
+        });
+    });
+});
+
+describe("shape", function() {
+    it("should pass shape validatation", function() {
+        var scrutiny = new Scrutiny(),
+            shape = {
+                name: "Flash",
+                enemies: [ "Zoom", "Grodd" ],
+                rating: 5
+            };
+
+        return scrutiny.validate(shape, scrutiny.checks.shape({
+            name: scrutiny.checks.string,
+            enemies: scrutiny.checks.arrayOf(scrutiny.checks.string)
+        }));
+    });
+
+    it("should fail shape validatation", function() {
+        var scrutiny = new Scrutiny();
+
+        return scrutiny.validate({ name: "Batman" }, scrutiny.checks.shape({
+            name: scrutiny.checks.string,
+            enemies: scrutiny.checks.arrayOf(scrutiny.checks.string)
+        })).then(function() {
+            assert(false);
+        }, function(e) {
+            assert.equal(e.message, "ERR_INVALID_SHAPE");
+        });
+    });
+});
