@@ -131,15 +131,29 @@ Type.defaultChecks = {
             var self = this;
 
             return self.validate(value, self.checks.object).then(function() {
-                var promises = [];
+                var shapeKeys = Object.keys(shape),
+                    valueKeys = Object.keys(value),
+                    key, promises;
 
-                for (var item in shape) {
-                    promises.push(shape[item](value[item]));
+                if (shapeKeys.length > valueKeys.length) {
+                    throw new Error();
+                }
+
+                promises = [];
+
+                for (var i = 0, l = shapeKeys.length; i < l; i++) {
+                    key = shapeKeys[i];
+
+                    if (valueKeys.indexOf(key) > -1) {
+                        promises.push(self.validate(value[key], shape[key]));
+                    } else {
+                        throw new Error();
+                    }
                 }
 
                 return Promise.all(promises);
             }).catch(function() {
-                throw new Error("ERR_NOT_INVALID_SHAPE");
+                throw new Error("ERR_INVALID_SHAPE");
             });
         };
     }
