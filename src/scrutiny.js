@@ -1,17 +1,17 @@
 "use strict";
 
-function Type() {
+function Scrutiny() {
     // Handle situation where called without "new" keyword
-    if (this instanceof Type === false) {
-        throw new Error("Constructor Type requires 'new'");
+    if (this instanceof Scrutiny === false) {
+        throw new Error("Constructor Scrutiny requires 'new'");
     }
 
-    this.checks = Object.create(Type.defaultChecks);
+    this.checks = Object.create(Scrutiny.defaultChecks);
 
     Object.defineProperty(this.checks, "__instance__", { value: this, enumerable: false });
 }
 
-Type.defaultChecks = {
+Scrutiny.defaultChecks = {
 
     // Default checks
 
@@ -161,7 +161,7 @@ Type.defaultChecks = {
     }
 };
 
-Type.prototype.register = function(check, validator) {
+Scrutiny.prototype.register = function(check, validator) {
     if (typeof check !== "string" || check.length === 0) {
         throw new TypeError("Invalid string " + check);
     }
@@ -177,7 +177,7 @@ Type.prototype.register = function(check, validator) {
     this.checks[check] = validator;
 };
 
-Type.prototype.validate = function(value) {
+Scrutiny.prototype.validate = function(value) {
     var checks = Array.prototype.slice.call(arguments, 1),
         self = this;
 
@@ -190,4 +190,4 @@ Type.prototype.validate = function(value) {
     });
 };
 
-module.exports = Type;
+module.exports = Scrutiny;

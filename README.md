@@ -2,9 +2,13 @@
 
 An async validator, inspired by ReactJS PropTypes.
 
+[![Build status](https://travis-ci.org/satya164/scrutiny.svg?branch=master)](https://travis-ci.org/satya164/scrutiny)
+[![Dependencies](https://david-dm.org/satya164/scrutiny.svg)](https://david-dm.org/satya164/scrutiny)
+[![License](https://img.shields.io/npm/l/scrutiny.svg)](http://opensource.org/licenses/mit-license.php)
+
 ## Installation
 ```sh
-$ npm install pigment
+$ npm install scrutiny
 ```
 
 ## Usage
@@ -102,6 +106,12 @@ scrutiny.validate(emailId, scrutiny.checks.email, scrutiny.checks.unique)
 .then(/* do something with value */)
 ```
 
-[![Build status](https://travis-ci.org/satya164/scrutiny.svg?branch=master)](https://travis-ci.org/satya164/scrutiny)
-[![Dependencies](https://david-dm.org/satya164/scrutiny.svg)](https://david-dm.org/satya164/scrutiny)
-[![License](https://img.shields.io/npm/l/scrutiny.svg)](http://opensource.org/licenses/mit-license.php)
+### Source code
+
+You can get the latest source code from the [github page](http://github.com/satya164/scrutiny).
+
+`git clone https://github.com/satya164/scrutiny.git`
+
+### Bugs and feature requests
+
+Please submit bugs and feature requests [here](http://github.com/satya164/scrutiny/issues). Pull requests are always welcome.
