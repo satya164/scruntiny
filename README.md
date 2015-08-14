@@ -11,6 +11,15 @@ An async validator, inspired by ReactJS PropTypes.
 $ npm install scrutiny
 ```
 
+## Requirements
+Scrutiny has a `Promise` based API, and needs a global `Promise` object to function. Promises are natively available from Node.js v0.11 onwards.
+
+If you don't have a global `Promise` object, you can alternatively use `bluebird`, `Q` or any Promises/A+ compliant promise library as follows,
+
+```javascript
+Scrutiny.setPromise(require("bluebird"));
+```
+
 ## Usage
 To use **scrutiny** in your projects, you need to require the node module first.
 
@@ -18,17 +27,20 @@ To use **scrutiny** in your projects, you need to require the node module first.
 var Scrutiny = require("scrutiny");
 ```
 
-Scrutiny uses `checks` for validation, which are just simple functions. They can be asynchronous functions returning a promise or plain synchronous functions.
+Scrutiny uses `checks` for validation, which are just simple functions. They can be asynchronous functions returning a promise, or plain synchronous functions.
 
 Validating values,
 ```javascript
 var scrutiny = new Scrutiny();
 
 scrutiny.validate(
-    someval,
+    someValue,
     scrutiny.checks.oneOfType([
         scrutiny.checks.string,
-        scrutiny.checks.number
+        scrutiny.checks.number,
+        scrutiny.checks.shape({
+            toString: scrutiny.checks.func
+        })
     ])
 )
 .catch(function(error) {
@@ -36,7 +48,7 @@ scrutiny.validate(
 })
 .then(function(value) {
     // do something with value
-})
+});
 ```
 
 ### Inbuilt checks
