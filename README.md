@@ -91,7 +91,7 @@ scrutiny.register("email", function(value) {
 // Async validator
 scrutiny.register("unique", function(value) {
     return new Promise(function(resolve, reject) {
-        // query the server for the name
+        // query the server for the email
 
         if (exists) {
             reject(new Error("ERR_EMAIL_EXISTS"));
