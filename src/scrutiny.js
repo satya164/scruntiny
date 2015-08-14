@@ -7,8 +7,6 @@ function Scrutiny() {
     }
 
     this.checks = Object.create(Scrutiny.defaultChecks);
-
-    Object.defineProperty(this.checks, "__instance__", { value: this, enumerable: false });
 }
 
 Scrutiny.defaultChecks = {
@@ -163,7 +161,7 @@ Scrutiny.defaultChecks = {
 
 Scrutiny.prototype.register = function(check, validator) {
     if (typeof check !== "string" || check.length === 0) {
-        throw new TypeError("Invalid string " + check);
+        throw new TypeError("Invalid string '" + check + "'.");
     }
 
     if (this[check]) {
@@ -171,7 +169,7 @@ Scrutiny.prototype.register = function(check, validator) {
     }
 
     if (typeof validator !== "function") {
-        throw new TypeError("Invalid validator " + validator);
+        throw new TypeError("Invalid validator '" + validator + "'.");
     }
 
     this.checks[check] = validator;
