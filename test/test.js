@@ -254,27 +254,6 @@ describe("object", function() {
     });
 });
 
-describe("instanceOf", function() {
-    it("should pass instanceOf validatation", function() {
-        var scrutiny = new Scrutiny(),
-            arr = new Array();
-
-        return scrutiny.validate(arr, scrutiny.checks.instanceOf(Array)).then(function(value) {
-            assert.equal(value, arr);
-        });
-    });
-
-    it("should fail instanceOf validatation", function() {
-        var scrutiny = new Scrutiny();
-
-        return scrutiny.validate(new Array(), scrutiny.checks.instanceOf(Number)).then(function() {
-            assert(false);
-        }, function(e) {
-            assert.equal(e.message, "ERR_INVALID_INSTANCE");
-        });
-    });
-});
-
 describe("oneOf", function() {
     it("should pass oneOf validatation", function() {
         var scrutiny = new Scrutiny(),
