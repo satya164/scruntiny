@@ -53,9 +53,6 @@ scrutiny.checks.object         // matches objects, doesn't match null
 
 ### Inbuilt helpers
 ```javascript
-// Value is instance of a class, uses instanceof
-scrutiny.checks.instanceOf(Class)
-
 // Value is limited to specific values
 scrutiny.checks.oneOf([ "apple", "banana" ])
 
