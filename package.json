@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/satya164/scrutiny#readme",
   "devDependencies": {
+    "bluebird": "latest",
     "mocha": "latest"
   }
 }

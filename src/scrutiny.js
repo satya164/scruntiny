@@ -1,13 +1,19 @@
 "use strict";
 
+var Promise = global.Promise;
+
 function Scrutiny() {
     // Handle situation where called without "new" keyword
     if (this instanceof Scrutiny === false) {
-        throw new Error("Constructor Scrutiny requires 'new'");
+        throw new Error("Constructor 'Scrutiny' requires 'new'");
     }
 
     this.checks = Object.create(Scrutiny.defaultChecks);
 }
+
+Scrutiny.setPromise = function(P) {
+    Promise = P;
+};
 
 Scrutiny.defaultChecks = {
 
@@ -59,14 +65,6 @@ Scrutiny.defaultChecks = {
 
 
     // Helpers
-
-    instanceOf: function(instance) {
-        return function(value) {
-            if (value instanceof instance === false) {
-                throw new Error("ERR_INVALID_INSTANCE");
-            }
-        };
-    },
 
     oneOf: function(values) {
         return function(value) {
