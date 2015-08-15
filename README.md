@@ -87,7 +87,6 @@ scrutiny.checks.shape({
 })
 ```
 
-
 ## Custom checks
 Scrutiny is not of much use without custom checks. Adding your own custom checks are easy.
 
@@ -122,6 +121,23 @@ scrutiny.validate(emailId, scrutiny.checks.email, scrutiny.checks.unique)
 ```
 
 While you can just throw/reject with plain `Error` objects in `checks`, it's highly recommended that you throw `Scrutiny.Error` instead, so that errors which aren't validation errors don't go unnoticed.
+
+## Custom helpers
+Helpers are functions which take some parameters and return a `check`. Useful when you want to pass some parameters to your checks.
+
+```javascript
+scrutiny.register("instanceOf", function(instance) {
+    return function(value) {
+        if (value instanceof instance === false) {
+            throw new Scrutiny.Error("ERR_INVALID_INSTANCE");
+        }
+    };
+});
+
+scrutiny.validate(new Error(), scrutiny.checks.instanceOf(Error))
+.catch(/* handle error */)
+.then(/* do something with value */);
+```
 
 ## Source code
 
