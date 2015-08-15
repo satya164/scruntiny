@@ -5,19 +5,11 @@
 var Scrutiny = require("../src/scrutiny.js"),
     assert = require("assert");
 
+if (parseFloat(process.version.match(/^v(\d+\.\d+)/)[1]) < 0.12) {
+    Scrutiny.setPromise(require("bluebird"));
+}
+
 describe("core", function() {
-    it("should set custom Promise object", function() {
-        var scrutiny = new Scrutiny();
-
-        Scrutiny.setPromise(require("bluebird"));
-
-        return scrutiny.validate(null, scrutiny.checks.any).done(function() {
-            assert(true);
-
-            Scrutiny.setPromise(global.Promise);
-        });
-    });
-
     it("should not register invalid function", function() {
         var scrutiny = new Scrutiny();
 
