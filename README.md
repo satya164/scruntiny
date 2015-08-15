@@ -12,9 +12,9 @@ $ npm install scrutiny
 ```
 
 ## Requirements
-Scrutiny has a `Promise` based API, and needs a global `Promise` object to function. Promises are natively available from `Node.js v0.11` onwards.
+Scrutiny has a `Promise` based API, and needs a global `Promise` object to function. Promises are natively available from `Node.js v0.11.13` onwards.
 
-If you don't have a global `Promise` object, you can alternatively specify `bluebird`, `Q` or any Promises/A+ compliant promise library to use,
+If you don't have a global `Promise` object, or don't want to rely on the native implementation (which is known to be slow), you can alternatively specify `bluebird`, `Q` or any Promises/A+ compliant promise library to use,
 
 ```javascript
 Scrutiny.setPromise(require("bluebird"));
