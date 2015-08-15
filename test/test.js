@@ -162,6 +162,27 @@ describe("core", function() {
     });
 });
 
+describe("undefined", function() {
+    it("should pass undefined validatation", function() {
+        var scrutiny = new Scrutiny();
+
+        return scrutiny.validate(undefined, scrutiny.checks.undef).then(function(value) {
+            assert.equal(value, undefined);
+        });
+    });
+
+    it("should fail undefined validatation", function() {
+        var scrutiny = new Scrutiny();
+
+        return scrutiny.validate(NaN, scrutiny.checks.undef).then(function() {
+            assert(false);
+        }, function(e) {
+            assert(e instanceof Scrutiny.Error);
+            assert.equal(e.message, "ERR_VALUE_DEFINED");
+        });
+    });
+});
+
 describe("string", function() {
     it("should pass string validatation", function() {
         var scrutiny = new Scrutiny(),
