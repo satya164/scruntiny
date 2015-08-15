@@ -22,8 +22,12 @@ describe("core", function() {
         var scrutiny = new Scrutiny();
 
         assert.throws(function() {
+            scrutiny.register("", function() {});
+        }, TypeError);
+
+        assert.throws(function() {
             scrutiny.register("invalid", null);
-        });
+        }, TypeError);
     });
 
     it("should not mix checks of different instances", function() {
@@ -38,6 +42,30 @@ describe("core", function() {
         assert(instance2.checks.type2 && !instance2.checks.type1);
     });
 
+    it("should throw proper Scrutiny.Error", function() {
+        var scrutiny = new Scrutiny();
+
+        return scrutiny.validate(null, scrutiny.checks.undef).then(function() {
+            assert(false);
+        }, function(err) {
+            assert(err instanceof Scrutiny.Error);
+            assert(err.stack);
+            assert.equal(err.name, "Scrutiny.Error");
+        });
+    });
+
+    it("should not throw a Scrutiny.Error", function() {
+        var scrutiny = new Scrutiny();
+
+        return scrutiny.validate(null, function() {
+            throw new TypeError();
+        }).then(function() {
+            assert(false);
+        }, function(err) {
+            assert.notEqual(err instanceof Scrutiny.Error, true);
+        });
+    });
+
     it("should register and validate", function() {
         var scrutiny = new Scrutiny();
 
@@ -45,7 +73,7 @@ describe("core", function() {
             var veggies = [ "potato", "tomato" ];
 
             if (veggies.indexOf(value) === -1) {
-                throw new Error("ERR_INVALID_VEGGIE");
+                throw new Scrutiny.Error("ERR_INVALID_VEGGIE");
             }
         });
 
@@ -53,13 +81,14 @@ describe("core", function() {
             var fruits = [ "apple", "orange", "banana", "tomato" ];
 
             if (fruits.indexOf(value) === -1) {
-                throw new Error("ERR_INVALID_FRUIT");
+                throw new Scrutiny.Error("ERR_INVALID_FRUIT");
             }
         });
 
         return scrutiny.validate("water", scrutiny.checks.veggie).then(function() {
             assert(false);
         }, function(e) {
+            assert(e instanceof Scrutiny.Error);
             assert.equal(e.message, "ERR_INVALID_VEGGIE");
         }).then(function() {
             return scrutiny.validate("tomato", scrutiny.checks.veggie);
@@ -68,6 +97,7 @@ describe("core", function() {
         }).then(function() {
             assert(false);
         }, function(e) {
+            assert(e instanceof Scrutiny.Error);
             assert.equal(e.message, "ERR_INVALID_FRUIT");
         }).then(function() {
             return scrutiny.validate("apple", scrutiny.checks.fruit);
@@ -76,18 +106,21 @@ describe("core", function() {
         }).then(function() {
             assert(false);
         }, function(e) {
+            assert(e instanceof Scrutiny.Error);
             assert.equal(e.message, "ERR_INVALID_VEGGIE");
         }).then(function() {
             return scrutiny.validate("potato", scrutiny.checks.fruit, scrutiny.checks.veggie);
         }).then(function() {
             assert(false);
         }, function(e) {
+            assert(e instanceof Scrutiny.Error);
             assert.equal(e.message, "ERR_INVALID_FRUIT");
         }).then(function() {
             return scrutiny.validate("fish", scrutiny.checks.fruit, scrutiny.checks.veggie);
         }).then(function() {
             assert(false);
         }, function(e) {
+            assert(e instanceof Scrutiny.Error);
             assert.equal(e.message, "ERR_INVALID_FRUIT");
         }).then(function() {
             return scrutiny.validate("tomato", scrutiny.checks.fruit, scrutiny.checks.veggie);
@@ -117,12 +150,13 @@ describe("core", function() {
         return scrutiny.validate("shoot", function() {
             return new Promise(function(resolve, reject) {
                 setTimeout(function() {
-                    reject(new Error("ERR_ITS_WRONG"));
+                    reject(new Scrutiny.Error("ERR_ITS_WRONG"));
                 }, 5);
             });
         }).then(function() {
             assert(false);
         }, function(e) {
+            assert(e instanceof Scrutiny.Error);
             assert.equal(e.message, "ERR_ITS_WRONG");
         });
     });
@@ -144,6 +178,7 @@ describe("string", function() {
         return scrutiny.validate(null, scrutiny.checks.string).then(function() {
             assert(false);
         }, function(e) {
+            assert(e instanceof Scrutiny.Error);
             assert.equal(e.message, "ERR_INVALID_STRING");
         });
     });
@@ -165,6 +200,7 @@ describe("boolean", function() {
         return scrutiny.validate(0, scrutiny.checks.bool).then(function() {
             assert(false);
         }, function(e) {
+            assert(e instanceof Scrutiny.Error);
             assert.equal(e.message, "ERR_INVALID_BOOL");
         });
     });
@@ -186,12 +222,14 @@ describe("number", function() {
         return scrutiny.validate(NaN, scrutiny.checks.number).then(function() {
             assert(false);
         }, function(e) {
+            assert(e instanceof Scrutiny.Error);
             assert.equal(e.message, "ERR_INVALID_NUMBER");
         }).then(function() {
             return scrutiny.validate("5", scrutiny.checks.number);
         }).then(function() {
             assert(false);
         }, function(e) {
+            assert(e instanceof Scrutiny.Error);
             assert.equal(e.message, "ERR_INVALID_NUMBER");
         });
     });
@@ -213,6 +251,7 @@ describe("function", function() {
         return scrutiny.validate(null, scrutiny.checks.func).then(function() {
             assert(false);
         }, function(e) {
+            assert(e instanceof Scrutiny.Error);
             assert.equal(e.message, "ERR_INVALID_FUNC");
         });
     });
@@ -234,6 +273,7 @@ describe("array", function() {
         return scrutiny.validate({ 0: "a", 1: "b", length: 2 }, scrutiny.checks.array).then(function() {
             assert(false);
         }, function(e) {
+            assert(e instanceof Scrutiny.Error);
             assert.equal(e.message, "ERR_INVALID_ARRAY");
         });
     });
@@ -255,12 +295,14 @@ describe("object", function() {
         return scrutiny.validate(543, scrutiny.checks.object).then(function() {
             assert(false);
         }, function(e) {
+            assert(e instanceof Scrutiny.Error);
             assert.equal(e.message, "ERR_INVALID_OBJECT");
         }).then(function() {
             return scrutiny.validate(null, scrutiny.checks.object);
         }).then(function() {
             assert(false);
         }, function(e) {
+            assert(e instanceof Scrutiny.Error);
             assert.equal(e.message, "ERR_INVALID_OBJECT");
         });
     });
@@ -282,6 +324,7 @@ describe("oneOf", function() {
         return scrutiny.validate("orange", scrutiny.checks.oneOf([ "apple", "banana" ])).then(function() {
             assert(false);
         }, function(e) {
+            assert(e instanceof Scrutiny.Error);
             assert.equal(e.message, "ERR_NOT_ONE_OF");
         });
     });
@@ -303,6 +346,7 @@ describe("arrayOf", function() {
         return scrutiny.validate([ "a", "b", "c" ], scrutiny.checks.arrayOf(scrutiny.checks.number)).then(function() {
             assert(false);
         }, function(e) {
+            assert(e instanceof Scrutiny.Error);
             assert.equal(e.message, "ERR_NOT_ARRAY_OF");
         });
     });
@@ -324,6 +368,7 @@ describe("objectOf", function() {
         return scrutiny.validate({ items: 3 }, scrutiny.checks.objectOf(scrutiny.checks.string)).then(function() {
             assert(false);
         }, function(e) {
+            assert(e instanceof Scrutiny.Error);
             assert.equal(e.message, "ERR_NOT_OBJECT_OF");
         });
     });
@@ -350,6 +395,7 @@ describe("oneOfType", function() {
         return scrutiny.validate({}, scrutiny.checks.oneOfType([ scrutiny.checks.number, scrutiny.checks.string ])).then(function() {
             assert(false);
         }, function(e) {
+            assert(e instanceof Scrutiny.Error);
             assert.equal(e.message, "ERR_NOT_ONE_OF_TYPE");
         });
     });
@@ -379,6 +425,7 @@ describe("shape", function() {
         })).then(function() {
             assert(false);
         }, function(e) {
+            assert(e instanceof Scrutiny.Error);
             assert.equal(e.message, "ERR_INVALID_SHAPE");
         });
     });

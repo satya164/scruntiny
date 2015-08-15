@@ -15,6 +15,30 @@ Scrutiny.setPromise = function(P) {
     Promise = P;
 };
 
+Scrutiny.Error = function() {
+    var error = Error.apply(this, Array.prototype.slice.call(arguments));
+
+    Object.defineProperty(this, "name", {
+        value: "Scrutiny.Error",
+        writable: false,
+        enumerable: false
+    });
+
+    Object.defineProperty(this, "message", {
+        value: error.message,
+        writable: false,
+        enumerable: false
+    });
+
+    Object.defineProperty(this, "stack", {
+        value: error.stack,
+        writable: false,
+        enumerable: false
+    });
+};
+
+Scrutiny.Error.prototype = Object.create(Error.prototype);
+
 Scrutiny.defaultChecks = {
 
     // Default checks
@@ -23,43 +47,43 @@ Scrutiny.defaultChecks = {
 
     undef: function(value) {
         if (typeof value !== "undefined") {
-            throw new Error("ERR_VALUE_DEFINED");
+            throw new Scrutiny.Error("ERR_VALUE_DEFINED");
         }
     },
 
     string: function(value) {
         if (typeof value !== "string") {
-            throw new Error("ERR_INVALID_STRING");
+            throw new Scrutiny.Error("ERR_INVALID_STRING");
         }
     },
 
     bool: function(value) {
         if (typeof value !== "boolean") {
-            throw new Error("ERR_INVALID_BOOL");
+            throw new Scrutiny.Error("ERR_INVALID_BOOL");
         }
     },
 
     number: function(value) {
         if (typeof value !== "number" || isNaN(value)) {
-            throw new Error("ERR_INVALID_NUMBER");
+            throw new Scrutiny.Error("ERR_INVALID_NUMBER");
         }
     },
 
     func: function(value) {
         if (typeof value !== "function") {
-            throw new Error("ERR_INVALID_FUNC");
+            throw new Scrutiny.Error("ERR_INVALID_FUNC");
         }
     },
 
     array: function(value) {
         if (!Array.isArray(value)) {
-            throw new Error("ERR_INVALID_ARRAY");
+            throw new Scrutiny.Error("ERR_INVALID_ARRAY");
         }
     },
 
     object: function(value) {
         if (typeof value !== "object" || value === null) {
-            throw new Error("ERR_INVALID_OBJECT");
+            throw new Scrutiny.Error("ERR_INVALID_OBJECT");
         }
     },
 
@@ -69,7 +93,7 @@ Scrutiny.defaultChecks = {
     oneOf: function(values) {
         return function(value) {
             if (values.indexOf(value) === -1) {
-                throw new Error("ERR_NOT_ONE_OF");
+                throw new Scrutiny.Error("ERR_NOT_ONE_OF");
             }
         };
     },
@@ -82,8 +106,12 @@ Scrutiny.defaultChecks = {
                 return Promise.all(value.map(function(item) {
                     return self.validate(item, check);
                 }));
-            }).catch(function() {
-                throw new Error("ERR_NOT_ARRAY_OF");
+            }).catch(function(err) {
+                if (err instanceof Scrutiny.Error) {
+                    throw new Scrutiny.Error("ERR_NOT_ARRAY_OF");
+                } else {
+                    throw err;
+                }
             });
         };
     },
@@ -99,8 +127,12 @@ Scrutiny.defaultChecks = {
                     promises.push(self.validate(value[prop], check));
                 }
 
-                return Promise.all(promises).catch(function() {
-                    throw new Error("ERR_NOT_OBJECT_OF");
+                return Promise.all(promises).catch(function(err) {
+                    if (err instanceof Scrutiny.Error) {
+                        throw new Scrutiny.Error("ERR_NOT_OBJECT_OF");
+                    } else {
+                        throw err;
+                    }
                 });
             });
         };
@@ -118,7 +150,7 @@ Scrutiny.defaultChecks = {
                 });
             })).then(function(results) {
                 if (results.indexOf(true) === -1) {
-                    throw new Error("ERR_NOT_ONE_OF_TYPE");
+                    throw new Scrutiny.Error("ERR_NOT_ONE_OF_TYPE");
                 }
             });
         };
@@ -134,7 +166,7 @@ Scrutiny.defaultChecks = {
                     key, promises;
 
                 if (shapeKeys.length > valueKeys.length) {
-                    throw new Error();
+                    throw new Scrutiny.Error();
                 }
 
                 promises = [];
@@ -145,13 +177,17 @@ Scrutiny.defaultChecks = {
                     if (valueKeys.indexOf(key) > -1) {
                         promises.push(self.validate(value[key], shape[key]));
                     } else {
-                        throw new Error();
+                        throw new Scrutiny.Error();
                     }
                 }
 
                 return Promise.all(promises);
-            }).catch(function() {
-                throw new Error("ERR_INVALID_SHAPE");
+            }).catch(function(err) {
+                if (err instanceof Scrutiny.Error) {
+                    throw new Scrutiny.Error("ERR_INVALID_SHAPE");
+                } else {
+                    throw err;
+                }
             });
         };
     }

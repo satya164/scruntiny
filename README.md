@@ -12,9 +12,9 @@ $ npm install scrutiny
 ```
 
 ## Requirements
-Scrutiny has a `Promise` based API, and needs a global `Promise` object to function. Promises are natively available from Node.js v0.11 onwards.
+Scrutiny has a `Promise` based API, and needs a global `Promise` object to function. Promises are natively available from `Node.js v0.11` onwards.
 
-If you don't have a global `Promise` object, you can alternatively use `bluebird`, `Q` or any Promises/A+ compliant promise library as follows,
+If you don't have a global `Promise` object, you can alternatively specify `bluebird`, `Q` or any Promises/A+ compliant promise library to use,
 
 ```javascript
 Scrutiny.setPromise(require("bluebird"));
@@ -44,12 +44,18 @@ scrutiny.validate(
     ])
 )
 .catch(function(error) {
-    // handle error
+    if (error instanceof Scrutiny.Error) {
+        // handle error in validation
+    } else {
+        // handle other error
+    }
 })
 .then(function(value) {
     // do something with value
 });
 ```
+
+When an error occurs, all the inbuilt checks return an instance of `Scrutiny.Error`, so you can verify that the `Error` was in fact a validation error, and not some other error.
 
 ### Inbuilt checks
 ```javascript
@@ -93,7 +99,7 @@ var scrutiny = new Scrutiny();
 // Synchronous validator
 scrutiny.register("email", function(value) {
     if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]+$/.test(value)) {
-        throw new Error("ERR_INVALID_EMAIL");
+        throw new Scrutiny.Error("ERR_INVALID_EMAIL");
     }
 });
 
@@ -103,7 +109,7 @@ scrutiny.register("unique", function(value) {
         // query the server for the email
 
         if (exists) {
-            reject(new Error("ERR_EMAIL_EXISTS"));
+            reject(new Scrutiny.Error("ERR_EMAIL_EXISTS"));
         } else {
             resolve();
         }
@@ -112,8 +118,10 @@ scrutiny.register("unique", function(value) {
 
 scrutiny.validate(emailId, scrutiny.checks.email, scrutiny.checks.unique)
 .catch(/* handle error */)
-.then(/* do something with value */)
+.then(/* do something with value */);
 ```
+
+While you can just throw/reject with plain `Error` objects in `checks`, it's highly recommended that you throw `Scrutiny.Error` instead, so that errors which aren't validation errors don't go unnoticed.
 
 ## Source code
 
@@ -124,3 +132,5 @@ You can get the latest source code from the [github page](http://github.com/saty
 ## Bugs and feature requests
 
 Please submit bugs and feature requests [here](http://github.com/satya164/scrutiny/issues). Pull requests are always welcome.
+
+Pull requests must follow the `.editorconfig` settings and pass `eslint` validation.
