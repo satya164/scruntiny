@@ -5,8 +5,12 @@
 var Scrutiny = require("../src/scrutiny.js"),
     assert = require("assert");
 
+var Promise = global.Promise;
+
 if (parseFloat(process.version.match(/^v(\d+\.\d+)/)[1]) < 0.12) {
-    Scrutiny.setPromise(require("bluebird"));
+    Promise = require("bluebird");
+
+    Scrutiny.setPromise(Promise);
 }
 
 describe("core", function() {
