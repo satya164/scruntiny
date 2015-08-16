@@ -47,43 +47,43 @@ Scrutiny.defaultChecks = {
 
     undef: function(value) {
         if (typeof value !== "undefined") {
-            throw new Scrutiny.Error("ERR_VALUE_DEFINED");
+            throw new Scrutiny.Error("'" + value + "' is not undefined");
         }
     },
 
     string: function(value) {
         if (typeof value !== "string") {
-            throw new Scrutiny.Error("ERR_INVALID_STRING");
+            throw new Scrutiny.Error("'" + value + "' is not a string");
         }
     },
 
     bool: function(value) {
         if (typeof value !== "boolean") {
-            throw new Scrutiny.Error("ERR_INVALID_BOOL");
+            throw new Scrutiny.Error("'" + value + "' is not a boolean");
         }
     },
 
     number: function(value) {
         if (typeof value !== "number" || isNaN(value)) {
-            throw new Scrutiny.Error("ERR_INVALID_NUMBER");
+            throw new Scrutiny.Error("'" + value + "' is not a number");
         }
     },
 
     func: function(value) {
         if (typeof value !== "function") {
-            throw new Scrutiny.Error("ERR_INVALID_FUNC");
+            throw new Scrutiny.Error("'" + value + "' is not a function");
         }
     },
 
     array: function(value) {
         if (!Array.isArray(value)) {
-            throw new Scrutiny.Error("ERR_INVALID_ARRAY");
+            throw new Scrutiny.Error("'" + value + "' is not an array");
         }
     },
 
     object: function(value) {
         if (typeof value !== "object" || value === null) {
-            throw new Scrutiny.Error("ERR_INVALID_OBJECT");
+            throw new Scrutiny.Error("'" + value + "' is not an object");
         }
     },
 
@@ -93,7 +93,7 @@ Scrutiny.defaultChecks = {
     oneOf: function(values) {
         return function(value) {
             if (values.indexOf(value) === -1) {
-                throw new Scrutiny.Error("ERR_NOT_ONE_OF");
+                throw new Scrutiny.Error("'" + value + "' is not one of the values: " + values.join(", "));
             }
         };
     },
@@ -108,7 +108,7 @@ Scrutiny.defaultChecks = {
                 }));
             }).catch(function(err) {
                 if (err instanceof Scrutiny.Error) {
-                    throw new Scrutiny.Error("ERR_NOT_ARRAY_OF");
+                    throw new Scrutiny.Error("'" + value + "' is not an array of items passing the check: " + check);
                 } else {
                     throw err;
                 }
@@ -129,7 +129,7 @@ Scrutiny.defaultChecks = {
 
                 return Promise.all(promises).catch(function(err) {
                     if (err instanceof Scrutiny.Error) {
-                        throw new Scrutiny.Error("ERR_NOT_OBJECT_OF");
+                        throw new Scrutiny.Error("'" + value + "' is not an object of property values passing the check: " + check);
                     } else {
                         throw err;
                     }
@@ -150,7 +150,7 @@ Scrutiny.defaultChecks = {
                 });
             })).then(function(results) {
                 if (results.indexOf(true) === -1) {
-                    throw new Scrutiny.Error("ERR_NOT_ONE_OF_TYPE");
+                    throw new Scrutiny.Error("'" + value + "' doesn't pass any of the checks: " + checks.join(", "));
                 }
             });
         };
@@ -184,7 +184,7 @@ Scrutiny.defaultChecks = {
                 return Promise.all(promises);
             }).catch(function(err) {
                 if (err instanceof Scrutiny.Error) {
-                    throw new Scrutiny.Error("ERR_INVALID_SHAPE");
+                    throw new Scrutiny.Error("'" + value + "' doesn't match the shape: " + shape);
                 } else {
                     throw err;
                 }
@@ -195,15 +195,15 @@ Scrutiny.defaultChecks = {
 
 Scrutiny.prototype.register = function(check, validator) {
     if (typeof check !== "string" || check.length === 0) {
-        throw new TypeError("Invalid string '" + check + "'.");
+        throw new TypeError("Invalid string '" + check + "'");
     }
 
-    if (this[check]) {
-        throw new Error("Check '" + check + "' already exists.");
+    if (this.checks[check]) {
+        throw new Error("Check '" + check + "' already exists");
     }
 
     if (typeof validator !== "function") {
-        throw new TypeError("Invalid validator '" + validator + "'.");
+        throw new TypeError("Invalid validator '" + validator + "'");
     }
 
     this.checks[check] = validator;

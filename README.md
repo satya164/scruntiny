@@ -43,15 +43,15 @@ scrutiny.validate(
         })
     ])
 )
+.then(function(value) {
+    // do something with value
+})
 .catch(function(error) {
     if (error instanceof Scrutiny.Error) {
         // handle error in validation
     } else {
-        // handle other error
+        // handle other errors
     }
-})
-.then(function(value) {
-    // do something with value
 });
 ```
 
@@ -98,17 +98,17 @@ var scrutiny = new Scrutiny();
 // Synchronous validator
 scrutiny.register("email", function(value) {
     if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]+$/.test(value)) {
-        throw new Scrutiny.Error("ERR_INVALID_EMAIL");
+        throw new Scrutiny.Error("'" + value + "' is not a valid email address");
     }
 });
 
 // Async validator
 scrutiny.register("unique", function(value) {
     return new Promise(function(resolve, reject) {
-        // query the server for the email
+        // query database for uniqueness of email
 
         if (exists) {
-            reject(new Scrutiny.Error("ERR_EMAIL_EXISTS"));
+            reject(new Scrutiny.Error("'" + value + "' already exists"));
         } else {
             resolve();
         }
@@ -116,8 +116,8 @@ scrutiny.register("unique", function(value) {
 });
 
 scrutiny.validate(emailId, scrutiny.checks.email, scrutiny.checks.unique)
-.catch(/* handle error */)
-.then(/* do something with value */);
+.then(/* do something with value */)
+.catch(/* handle error */);
 ```
 
 While you can just throw/reject with plain `Error` objects in `checks`, it's highly recommended that you throw `Scrutiny.Error` instead, so that errors which aren't validation errors don't go unnoticed.
@@ -129,14 +129,14 @@ Helpers are functions which take some parameters and return a `check`. Useful wh
 scrutiny.register("instanceOf", function(instance) {
     return function(value) {
         if (value instanceof instance === false) {
-            throw new Scrutiny.Error("ERR_INVALID_INSTANCE");
+            throw new Scrutiny.Error("'" + value + "' is not an instance of " + instance);
         }
     };
 });
 
 scrutiny.validate(new Error(), scrutiny.checks.instanceOf(Error))
-.catch(/* handle error */)
-.then(/* do something with value */);
+.then(/* do something with value */)
+.catch(/* handle error */);
 ```
 
 ## Source code
