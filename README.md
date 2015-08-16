@@ -57,6 +57,8 @@ scrutiny.validate(
 
 When an error occurs, all the inbuilt checks return an instance of `Scrutiny.Error`, so you can verify that the `Error` was in fact a validation error, and not some other error.
 
+**Tip:** You can check if an error is `Scrutiny.Error` either with `instanceof` or the `name` property of the error object.
+
 ### Inbuilt checks
 ```javascript
 scrutiny.checks.any            // matches anything
