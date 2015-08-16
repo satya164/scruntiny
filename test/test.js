@@ -5,12 +5,8 @@
 var Scrutiny = require("../src/scrutiny.js"),
     assert = require("assert");
 
-var Promise = global.Promise;
-
 if (parseFloat(process.version.match(/^v(\d+\.\d+)/)[1]) < 0.12) {
-    Promise = require("bluebird");
-
-    Scrutiny.setPromise(Promise);
+    Scrutiny.setPromise(require("bluebird"));
 }
 
 describe("core", function() {
@@ -138,11 +134,13 @@ describe("core", function() {
             thing = "thing";
 
         return scrutiny.validate(thing, function() {
-            return new Promise(function(resolve) {
-                setTimeout(function() {
-                    resolve(thing);
-                }, 5);
-            });
+            return {
+                then: function(resolve) {
+                    setTimeout(function() {
+                        resolve(thing);
+                    }, 5);
+                }
+            };
         }).then(function(value) {
             assert.equal(value, thing);
         });
@@ -152,11 +150,13 @@ describe("core", function() {
         var scrutiny = new Scrutiny();
 
         return scrutiny.validate("shoot", function() {
-            return new Promise(function(resolve, reject) {
-                setTimeout(function() {
-                    reject(new Scrutiny.Error("It's wrong"));
-                }, 5);
-            });
+            return {
+                then: function(resolve, reject) {
+                    setTimeout(function() {
+                        reject(new Scrutiny.Error("It's wrong"));
+                    }, 5);
+                }
+            };
         }).then(function() {
             assert(false);
         }, function(e) {
