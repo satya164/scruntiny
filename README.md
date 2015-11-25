@@ -146,29 +146,20 @@ scrutiny.validate(new Error(), scrutiny.checks.instanceOf(Error))
 Scrutiny works great with ES2016 `async`/`await` syntax, and the code becomes a lot more simpler.
 
 ```javascript
-async function validateInput(input) {
-    try {
-        await scrutiny.validate(
-            input,
-            scrutiny.checks.oneOfType([
-                scrutiny.checks.string,
-                scrutiny.checks.shape({
-                    toString: scrutiny.checks.func
-                })
-            ])
-        );
+try {
+    await scrutiny.validate(
+        input,
+        scrutiny.checks.username
+    );
 
-        // do something with the input value
-    } catch (error) {
-        if (error instanceof Scrutiny.Error) {
-            // handle error in validation
-        } else {
-            // handle other errors
-        }
+    // do something with the input value
+} catch (error) {
+    if (error instanceof Scrutiny.Error) {
+        // handle error in validation
+    } else {
+        // handle other errors
     }
 }
-
-validateInput();
 ```
 
 ## Source code
