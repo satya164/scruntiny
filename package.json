@@ -1,6 +1,6 @@
 {
   "name": "scrutiny",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "An async validator, using Promises",
   "main": "src/scrutiny.js",
   "scripts": {
