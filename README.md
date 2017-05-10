@@ -1,5 +1,7 @@
 # Scrutiny
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/satya164/scrutiny.svg)](https://greenkeeper.io/)
+
 An async validator, inspired by ReactJS PropTypes.
 
 [![Build status](https://travis-ci.org/satya164/scrutiny.svg?branch=master)](https://travis-ci.org/satya164/scrutiny)
